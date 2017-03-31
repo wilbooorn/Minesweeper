@@ -1,6 +1,7 @@
 require_relative 'board'
 require 'byebug'
 require 'time'
+require 'yaml'
 
 class Minesweeper
   attr_accessor :board
@@ -11,9 +12,10 @@ class Minesweeper
 
   def run
     start = Time.now
+    board.render
     until over?
-      board.render
       make_move(get_input)
+      board.render
     end
     end_time = Time.now
     board.reveal_all
@@ -28,12 +30,20 @@ class Minesweeper
   def get_input
     pos = nil
     until valid?(pos)
-      print "Please input a position in the form of x,y.\n"
-      print "or to flag a bomb, enter \'f\':\n>> "
+      puts "> Enter a position in the form of x,y."
+      puts "> To flag a bomb, enter \'f\'."
+      puts "> To save, enter \'s\'"
+      print ">> "
       pos = gets.chomp
       flag(pos) if pos=='f'
+      save if pos=='s'
     end
     pos.split(",").map(&:to_i)
+  end
+
+  def save
+    File.open('minesweeper', 'w') {|f| f.write(YAML.dump(board))}
+    puts "Saved!"
   end
 
   def flag(pos)
