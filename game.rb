@@ -1,5 +1,6 @@
 require_relative 'board'
 require 'byebug'
+require 'time'
 
 class Minesweeper
   attr_accessor :board
@@ -9,16 +10,18 @@ class Minesweeper
   end
 
   def run
+    start = Time.now
     until over?
       board.render
       make_move(get_input)
     end
+    end_time = Time.now
     board.reveal_all
     board.render
     if board.bombs?
-      puts "You lose."
+      puts "You lost in #{(end_time - start).to_i/60} minutes, #{((end_time - start)%60).to_i} seconds."
     else
-      puts "Congrats! You won."
+      puts "Congrats! You won in #{(end_time - start).to_i/60} minutes, #{((end_time - start)%60).to_i} seconds."
     end
   end
 
