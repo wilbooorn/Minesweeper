@@ -7,7 +7,19 @@ class Minesweeper
   attr_accessor :board
 
   def initialize(size = 9, level = 1)
-    @board = Board.create_board(size, level)
+    board = open?
+    @board = board.nil? ? Board.create_board(size, level) : board
+  end
+
+  def open?
+    puts "Would you like to open a saved game? yes/no"
+    input = gets.chomp.downcase
+    if input == 'yes'
+      board = YAML.load(File.read('minesweeper'))
+    else
+      board = nil
+    end
+    board
   end
 
   def run
